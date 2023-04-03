@@ -7,10 +7,7 @@ import com.example.Todo.service.TodoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -53,6 +50,17 @@ public class TodoController {
             ResponseDTO<TodoDTO> response = ResponseDTO.<TodoDTO>builder().error(error).build();
             return ResponseEntity.badRequest().body(response);
         }
+    }
+
+
+    @GetMapping
+    public ResponseEntity<?>retrieveTodoList(){
+        String temporaryUserId = "temporary-userId";
+        List<TodoEntity> entities = service.retrieve(temporaryUserId);
+        List<TodoDTO> dtos = entities.stream().map(TodoDTO::new).collect(Collectors.toList());
+
+        ResponseDTO<TodoDTO> response = ResponseDTO.<TodoDTO>builder().data(dtos).build();
+        return ResponseEntity.ok().body(response);
     }
 
 }

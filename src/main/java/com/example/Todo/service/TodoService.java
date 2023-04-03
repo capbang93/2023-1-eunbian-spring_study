@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -14,12 +15,6 @@ import java.util.Optional;
 public class TodoService {
     @Autowired
     TodoRepository repository;
-
-    public Optional<TodoEntity> create(final TodoEntity entity){
-        validate(entity);
-        repository.save(entity);
-        return repository.findById(entity.getId());
-    }
 
     public void validate(final TodoEntity entity){
         if(entity == null){
@@ -31,4 +26,14 @@ public class TodoService {
             throw new RuntimeException("Unknown user");
         }
     }
+    public Optional<TodoEntity> create(final TodoEntity entity){
+        validate(entity);
+        repository.save(entity);
+        return repository.findById(entity.getId());
+    }
+
+    public List<TodoEntity> retrieve(final String userId){
+        return repository.findByUserId(userId);
+    }
+
 }
