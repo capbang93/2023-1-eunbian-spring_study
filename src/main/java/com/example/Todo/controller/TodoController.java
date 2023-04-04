@@ -7,6 +7,7 @@ import com.example.Todo.service.TodoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -22,14 +23,17 @@ public class TodoController {
     TodoService service;
 
     @PostMapping
-    public ResponseEntity<?> createTodo(@RequestBody TodoDTO dto){
+    public ResponseEntity<?> createTodo(@AuthenticationPrincipal String userId,
+                                        @RequestBody TodoDTO dto){
         try{
             log.info("Log: createTodo entrance");
             // dto를 이용해 테이블에 저장하기 위한 엔티티 생성
             TodoEntity entity = TodoDTO.toEntity(dto);
 
             // entity userId를 임시로 저장
-            entity.setUserId("temporary-userId");
+//            entity.setUserId("temporary-userId");
+            entity.setId(null);
+            entity.setUserId(userId);
 
             // service.create를 통해 repository에 엔티티 저장
             Optional<TodoEntity> entities = service.create(entity);
@@ -55,9 +59,8 @@ public class TodoController {
 
 
     @GetMapping
-    public ResponseEntity<?>retrieveTodoList(){
-        String temporaryUserId = "temporary-userId";
-        List<TodoEntity> entities = service.retrieve(temporaryUserId);
+    public ResponseEntity<?>retrieveTodoList(@AuthenticationPrincipal String userId){
+        List<TodoEntity> entities = service.retrieve(userId);
         List<TodoDTO> dtos = entities.stream().map(TodoDTO::new).collect(Collectors.toList());
 
         ResponseDTO<TodoDTO> response = ResponseDTO.<TodoDTO>builder().data(dtos).build();
@@ -65,12 +68,13 @@ public class TodoController {
     }
 
     @GetMapping("/update")
-    public ResponseEntity<?>update(@RequestBody TodoDTO dto){
+    public ResponseEntity<?>update(@AuthenticationPrincipal String userId,@RequestBody TodoDTO dto){
         try{
             // dto를 이용해 테이블에 저장하기 위한 엔티티를 생성
             TodoEntity entity = TodoDTO.toEntity(dto);
             // uesrId 임시 생성
-            entity.setUserId("temporary-userId");
+//            entity.setUserId("temporary-userId");
+            entity.setUserId(userId);
             // service.create를 통해 repository entity를 저장
             Optional<TodoEntity> entities = service.update(entity);
             // entities를 dtos로 변경
@@ -86,12 +90,13 @@ public class TodoController {
     }
 
     @PutMapping
-    public ResponseEntity<?>updateTodo(@RequestBody TodoDTO dto){
+    public ResponseEntity<?>updateTodo(@AuthenticationPrincipal String userId, @RequestBody TodoDTO dto){
         try{
             // dto를 이용해 테이블에 저장하기 위한 엔티티를 생성
             TodoEntity entity = TodoDTO.toEntity(dto);
             // uesrId 임시 생성
-            entity.setUserId("temporary-userId");
+//            entity.setUserId("temporary-userId");
+            entity.setUserId(userId);
             // service.create를 통해 repository entity를 저장
             Optional<TodoEntity> entities = service.updateTodo(entity);
             // entities를 dtos로 변경
