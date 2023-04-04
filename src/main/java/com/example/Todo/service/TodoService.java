@@ -37,19 +37,15 @@ public class TodoService {
 
     public Optional<TodoEntity>update(final TodoEntity entity){
         validate(entity);
-        if(repository.existsById(entity.getId())){
+        if(repository.existsById(entity.getId()))
             repository.save(entity);
-        }
-        else{
+        else
             throw new RuntimeException("Unknown id");
-
-        }
         return repository.findById(entity.getId());
     }
 
     public Optional<TodoEntity> updateTodo(final TodoEntity entity){
         validate(entity);
-
         // 테이블 id에 해당하는 데이터셋을 가져오기
         final Optional<TodoEntity> original = repository.findById(entity.getId());
         // original에 담긴 내용을 todo에 할당하고 title, done의 값 변경
@@ -61,4 +57,11 @@ public class TodoService {
         return repository.findById(entity.getId());
     }
 
+    public String delete(final String id){
+        if(repository.existsById(id))
+            repository.deleteById(id);
+        else
+            throw new RuntimeException("id does not exist");
+        return "Deleted";
+    }
 }
