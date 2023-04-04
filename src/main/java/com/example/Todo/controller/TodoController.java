@@ -63,4 +63,45 @@ public class TodoController {
         return ResponseEntity.ok().body(response);
     }
 
+    @GetMapping("/update")
+    public ResponseEntity<?>update(@RequestBody TodoDTO dto){
+        try{
+            // dto를 이용해 테이블에 저장하기 위한 엔티티를 생성
+            TodoEntity entity = TodoDTO.toEntity(dto);
+            // uesrId 임시 생성
+            entity.setUserId("temporary-userId");
+            // service.create를 통해 repository entity를 저장
+            Optional<TodoEntity> entities = service.update(entity);
+            // entities를 dtos로 변경
+            List<TodoDTO> dtos = entities.stream().map(TodoDTO::new).collect(Collectors.toList());
+            // Response DTO 생성
+            ResponseDTO<TodoDTO> response = ResponseDTO.<TodoDTO>builder().data(dtos).build();
+            // HTTP 200 상태로 전송
+            return ResponseEntity.ok().body(response);
+        }catch (Exception e){
+            String error = e.getMessage();
+            return ResponseEntity.badRequest().body(ResponseDTO.<TodoDTO>builder().error(error).build());
+        }
+    }
+
+    @PutMapping
+    public ResponseEntity<?>updateTodo(@RequestBody TodoDTO dto){
+        try{
+            // dto를 이용해 테이블에 저장하기 위한 엔티티를 생성
+            TodoEntity entity = TodoDTO.toEntity(dto);
+            // uesrId 임시 생성
+            entity.setUserId("temporary-userId");
+            // service.create를 통해 repository entity를 저장
+            Optional<TodoEntity> entities = service.updateTodo(entity);
+            // entities를 dtos로 변경
+            List<TodoDTO> dtos = entities.stream().map(TodoDTO::new).collect(Collectors.toList());
+            // Response DTO 생성
+            ResponseDTO<TodoDTO> response = ResponseDTO.<TodoDTO>builder().data(dtos).build();
+            // HTTP 200 상태로 전송
+            return ResponseEntity.ok().body(response);
+        }catch (Exception e){
+            String error = e.getMessage();
+            return ResponseEntity.badRequest().body(ResponseDTO.<TodoDTO>builder().error(error).build());
+        }
+    }
 }
