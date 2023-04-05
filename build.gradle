@@ -28,10 +28,6 @@ dependencies {
 	// https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt
 	implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'org.json:json:20160810'
-
-
-
 }
 
 tasks.named('test') {

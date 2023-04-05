@@ -35,6 +35,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter { // 서블릿
 
             //토큰 유효성 검사
             if(token!=null&&!token.equalsIgnoreCase(null)){
+                // userId 가져오기 - 위조된 경우 예외처리
                 String userId   = tokenProvider.validateAndGetUserId(token);
                 log.info("Authentication user ID : "+ userId);
                 AbstractAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userId, null, AuthorityUtils.NO_AUTHORITIES);
